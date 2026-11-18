@@ -27,7 +27,8 @@ commit e titoli di PR in inglese.
   force push e cancellazione sono bloccati dalla protezione del branch).
 - La descrizione della PR segue `.github/pull_request_template.md`: cosa cambia, come è stato
   testato (unit, e2e eseguiti o no, con esito), a quale task si riferisce.
-- Merge in squash: su `main` resta un commit per PR. Il branch si cancella dopo il merge.
+- Merge in squash: su `main` resta un commit per PR. Il branch non si cancella dopo il merge:
+  resta come storico del lavoro, con i suoi commit.
 
 ## Nomi di branch, commit e PR
 
