@@ -24,7 +24,8 @@ commit e titoli di PR in inglese.
   revisione. Su `main` si arriva solo con una PR (push diretti, force push e cancellazione sono
   bloccati dalla protezione del branch).
 - La descrizione della PR dice: cosa cambia, come è stato testato (unit, e2e eseguiti o no, con
-  esito), a quale task si riferisce.
+  esito), a quale task si riferisce. Segue `.github/pull_request_template.md`, anche quando la PR
+  si apre da riga di comando con `gh pr create`.
 - Merge in squash: su `main` resta un commit per PR. Il branch si cancella dopo il merge.
 
 ## Nomi di branch, commit e PR
