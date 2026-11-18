@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+
+# Segreti e configurazione locale: non si versionano mai
+.env
+.env.*
+!.env.example
+secrets/
+
+# Impostazioni locali degli agenti (le skill condivise invece si versionano)
+.claude/settings.local.json
+
+# Output di LaTeX e della compilazione
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Editor e sistema operativo
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
