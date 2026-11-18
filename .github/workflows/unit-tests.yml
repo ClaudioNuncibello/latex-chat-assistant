@@ -30,8 +30,7 @@ jobs:
         run: uv sync --all-packages --locked
 
       # The folder to test is `testpaths` in the root pyproject.toml (tests/unit).
-      # TEMPORARY: exit code 5 means "no tests collected" and is accepted only
-      # until the first unit test exists. Remove `|| [ $? -eq 5 ]` in that PR.
+      # pytest exits with code 5 when it collects no tests, so a wrong `testpaths`
+      # turns the check red instead of passing silently.
       - name: Run unit tests
-        shell: bash
-        run: uv run pytest || [ $? -eq 5 ]
+        run: uv run pytest
