@@ -1,0 +1,26 @@
+[project]
+name = "telegram-latex-assistant"
+version = "0.1.0"
+description = "Bot Telegram che converte testo in italiano naturale in un PDF LaTeX"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+# La radice non è un pacchetto da installare: raccoglie il workspace e gli strumenti di sviluppo.
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = []
+
+# Strumenti usati solo in sviluppo e nei test. I test stanno fuori dalle componenti,
+# quindi il gruppo dev vive qui nella radice.
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+# importlib permette file di test con lo stesso nome in cartelle di componenti diverse
+addopts = "--import-mode=importlib"

@@ -20,11 +20,13 @@ commit e titoli di PR in inglese.
 
 - Ogni task ha un branch dedicato, creato da `main` aggiornato. Il task è il più piccolo possibile:
   una sola cosa che si descrive in una riga.
-- A implementazione finita si apre una PR e ci si ferma: il merge spetta al collega dopo la
-  revisione. Su `main` si arriva solo con una PR (push diretti, force push e cancellazione sono
-  bloccati dalla protezione del branch).
-- La descrizione della PR dice: cosa cambia, come è stato testato (unit, e2e eseguiti o no, con
-  esito), a quale task si riferisce.
+- A implementazione finita si pubblica il branch con `git push` e ci si ferma: la PR la scrive e
+  la apre l'utente a mano su GitHub, dove il template è già nella descrizione. L'agente apre la
+  PR (`gh pr create`) solo se l'utente lo chiede, e in quel caso segue lo stesso template.
+- Il merge spetta al collega dopo la revisione. Su `main` si arriva solo con una PR (push diretti,
+  force push e cancellazione sono bloccati dalla protezione del branch).
+- La descrizione della PR segue `.github/pull_request_template.md`: cosa cambia, come è stato
+  testato (unit, e2e eseguiti o no, con esito), a quale task si riferisce.
 - Merge in squash: su `main` resta un commit per PR. Il branch si cancella dopo il merge.
 
 ## Nomi di branch, commit e PR
