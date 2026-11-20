@@ -34,3 +34,7 @@ jobs:
       # turns the check red instead of passing silently.
       - name: Run unit tests
         run: uv run pytest
+
+      # Fails if .claude/skills or .agents/skills differ from agent-skills/
+      - name: Check agent skills are in sync
+        run: uv run python scripts/sync_agent_skills.py --check
