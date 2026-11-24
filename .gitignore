@@ -30,3 +30,7 @@ secrets/
 Thumbs.db
 .idea/
 .vscode/
+
+# Coverage output
+.coverage
+htmlcov/

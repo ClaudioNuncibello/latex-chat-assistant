@@ -18,9 +18,33 @@ members = []
 [dependency-groups]
 dev = [
     "pytest",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.6",
+    "ty>=0.0.109",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests/unit"]
 # importlib permette file di test con lo stesso nome in cartelle di componenti diverse
-addopts = "--import-mode=importlib"
+addopts = "--import-mode=importlib --cov --cov-report=term-missing"
+
+# Coverage covers every Python file in the repo (so new components are measured automatically),
+# except the tests themselves. The pipeline fails below 90%.
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*", ".venv/*"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: isort, B: bugbear, UP: pyupgrade, SIM: simplify
+select = ["E", "W", "F", "I", "B", "UP", "SIM"]
+
+[tool.ty.environment]
+python-version = "3.11"

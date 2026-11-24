@@ -7,6 +7,8 @@ import pytest
 
 SCRIPT = Path(__file__).resolve().parents[3] / "scripts" / "sync_agent_skills.py"
 spec = importlib.util.spec_from_file_location("sync_agent_skills", SCRIPT)
+assert spec is not None
+assert spec.loader is not None
 sync_agent_skills = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sync_agent_skills)
 
