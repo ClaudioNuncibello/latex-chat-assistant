@@ -32,7 +32,8 @@ jobs:
       # The folder to test is `testpaths` in the root pyproject.toml (tests/unit).
       # pytest exits with code 5 when it collects no tests, so a wrong `testpaths`
       # turns the check red instead of passing silently.
-      - name: Run unit tests
+      # Coverage is measured through `addopts` and fails below 90% (`fail_under`).
+      - name: Run unit tests with coverage
         run: uv run pytest
 
       # Fails if .claude/skills or .agents/skills differ from agent-skills/

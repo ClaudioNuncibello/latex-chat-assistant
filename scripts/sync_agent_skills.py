@@ -44,14 +44,10 @@ def _same_tree(left: Path, right: Path) -> bool:
     comparison = filecmp.dircmp(left, right)
     if comparison.left_only or comparison.right_only or comparison.funny_files:
         return False
-    _, mismatch, errors = filecmp.cmpfiles(
-        left, right, comparison.common_files, shallow=False
-    )
+    _, mismatch, errors = filecmp.cmpfiles(left, right, comparison.common_files, shallow=False)
     if mismatch or errors:
         return False
-    return all(
-        _same_tree(left / sub, right / sub) for sub in comparison.common_dirs
-    )
+    return all(_same_tree(left / sub, right / sub) for sub in comparison.common_dirs)
 
 
 def find_differences(root: Path) -> list[str]:
@@ -60,9 +56,7 @@ def find_differences(root: Path) -> list[str]:
     for name in list_skills(root):
         for target in TARGET_DIRS:
             destination = root / target / name
-            if not destination.is_dir() or not _same_tree(
-                root / SOURCE_DIR / name, destination
-            ):
+            if not destination.is_dir() or not _same_tree(root / SOURCE_DIR / name, destination):
                 differences.append(f"{target}/{name} differs from {SOURCE_DIR}/{name}")
     return differences
 

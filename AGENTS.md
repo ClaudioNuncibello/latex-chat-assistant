@@ -44,7 +44,10 @@ Tutto minuscolo, con i trattini.
 
 - Ogni script ha i suoi unit test, scritti nello stesso task.
 - Gli unit test girano come GitHub Action sulla PR; se falliscono, il merge è impedito.
-  La Action esegue solo gli unit test.
+  La coverage deve restare almeno al 90% (`fail_under` in `pyproject.toml`): sotto, la Action fallisce.
+- Sulla PR gira anche la Action di lint (`ruff check`, `ruff format --check`, `ty check`). Prima
+  di pubblicare il branch si lanciano gli stessi comandi in locale (sezione Comandi).
+- Per ora la Action non esegue gli end-to-end né la build Docker.
 - Gli end-to-end partono a mano, quando una modifica tocca i punti che coprono. Eseguirli e
   riportare l'esito nella PR.
 
@@ -92,7 +95,10 @@ legge da `.claude/skills/`, Antigravity da `.agents/skills/`.
 
 ```
 uv sync          # installa il workspace
-uv run pytest tests/unit
+uv run pytest                      # unit test con coverage (soglia 90%)
+uv run ruff check .                # lint
+uv run ruff format .               # formattazione (--check per solo verificare)
+uv run ty check                    # type check
 uv run python scripts/sync_agent_skills.py            # copia agent-skills/ per i due agenti
 uv run python scripts/sync_agent_skills.py --check    # verifica che le copie siano allineate
 ```
