@@ -1,7 +1,7 @@
 [project]
-name = "telegram-latex-assistant"
+name = "latex-chat-assistant"
 version = "0.1.0"
-description = "Bot Telegram che converte testo in italiano naturale in un PDF LaTeX"
+description = "Pagina web in forma di chat che converte testo in italiano naturale in un PDF LaTeX"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []

@@ -1,10 +1,11 @@
-# telegram-latex-assistant
+# latex-chat-assistant
 
-Bot Telegram che converte italiano naturale (formule dettate a parole comprese) in un PDF LaTeX.
-Componenti, ognuna in un container Docker: bot → pipeline Python → LLM e compilatore.
+Pagina web in forma di chat che converte italiano naturale (formule dettate a parole comprese) in un
+PDF LaTeX, con anteprima e download del PDF e del sorgente. Componenti, ognuna in un container
+Docker: web → pipeline Python → LLM e compilatore.
 
 Specifica: `docs/architettura-generale.md` (requisiti e quadro d'insieme) e un file per ogni
-componente, `docs/<componente>.md` (`bot`, `pipeline`, `llm`, `compiler`). Prima di lavorare su una
+componente, `docs/<componente>.md` (`web`, `pipeline`, `llm`, `compiler`). Prima di lavorare su una
 componente, leggere il suo file. Le regole di lavoro stanno solo in questo file.
 
 Se esiste `docs/handoff.md`, leggerlo per primo: dice dove si era rimasti e cosa fare.
@@ -37,7 +38,7 @@ Tutto minuscolo, con i trattini.
 
 | Cosa | Forma | Esempio |
 |---|---|---|
-| Branch | `<tipo>/<componente>-<descrizione-breve>` | `feat/bot-start-command` |
+| Branch | `<tipo>/<componente>-<descrizione-breve>` | `feat/web-model-selector` |
 | Titolo PR e commit | `<tipo>(<componente>): <verbo all'imperativo> ...` | `fix(pipeline): reject empty text` |
 
 ## Test
