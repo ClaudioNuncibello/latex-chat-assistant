@@ -17,6 +17,19 @@ Issue tracker: GitHub, con `gh`. Come si pubblicano e si leggono i ticket: `docs
 Prosa e documentazione in italiano. Identificatori, nomi di file, commenti nel codice, branch,
 commit e titoli di PR in inglese.
 
+## Spiegare il lavoro
+
+Regola importante: chi segue il lavoro deve capire tutto quello che si fa, mentre si fa. L'agente
+spiega in chat, in italiano semplice, definendo i termini tecnici la prima volta che li usa.
+
+- **Prima di un task:** cosa si farà, a cosa serve nel progetto e quali file si toccano.
+- **Durante:** per ogni passo, cosa fa e perché si fa così. Vale anche per file di configurazione,
+  dipendenze e comandi.
+- **A task finito:** cosa è cambiato file per file, come provarlo, con quale esito è stato provato e
+  cosa resta da fare.
+- **A fase finita** (le fasi di un piano, per esempio `docs/web-piano.md`): cosa funziona adesso,
+  come si collegano le parti realizzate e quale fase viene dopo.
+
 ## Un branch, un task, una PR
 
 - Ogni task ha un branch dedicato, creato da `main` aggiornato. Il task è il più piccolo possibile:
