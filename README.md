@@ -48,7 +48,7 @@ d'insieme è in [docs/architettura-generale.md](docs/architettura-generale.md).
 Per provare la pagina serve Docker:
 
 ```
-docker build -f web/Dockerfile -t latex-chat-web .
+docker build -t latex-chat-web web
 docker run --rm -p 127.0.0.1:8080:8080 latex-chat-web
 ```
 

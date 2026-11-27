@@ -1,6 +1,6 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
-import { App } from "../../../web/src/App";
+import { App } from "../../src/App";
 
 afterEach(cleanup);
 

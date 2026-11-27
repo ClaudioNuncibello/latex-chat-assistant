@@ -47,8 +47,8 @@ rispettiamo:
 
 ## 3. Componenti
 
-Ogni componente ha la sua cartella e un container Docker. Quelle in Python hanno il loro
-`pyproject.toml` (workspace uv); `web` ha il suo `package.json` (workspace npm). Un file
+Ogni componente ha la sua cartella, con dentro i suoi test, e un container Docker. Quelle in Python
+hanno il loro `pyproject.toml` (workspace uv); `web` è un progetto npm autonomo. Un file
 `docker-compose` avvia l'insieme. **[proposta]**
 
 ```

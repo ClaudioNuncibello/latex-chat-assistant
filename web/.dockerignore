@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+tests
+
+# Local configuration and secrets
+.env
+.env.*

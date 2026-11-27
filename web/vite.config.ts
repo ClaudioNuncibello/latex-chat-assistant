@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
-    // Tests live outside the component, as required by AGENTS.md
-    dir: "../tests/unit/web",
+    // Only unit tests: end-to-end tests will live in tests/e2e and run with Playwright
+    dir: "tests/unit",
     include: ["**/test_*.{ts,tsx}"],
     coverage: {
       include: ["src/**/*.{ts,tsx}"],

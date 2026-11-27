@@ -9,11 +9,11 @@ afterEach(() => {
 test("mounts the app into #root", async () => {
   document.body.innerHTML = '<div id="root"></div>';
 
-  await import("../../../web/src/main");
+  await import("../../src/main");
 
   await waitFor(() => expect(document.querySelector("#root > main")).not.toBeNull());
 });
 
 test("fails when #root is missing", async () => {
-  await expect(import("../../../web/src/main")).rejects.toThrow("Missing #root element");
+  await expect(import("../../src/main")).rejects.toThrow("Missing #root element");
 });

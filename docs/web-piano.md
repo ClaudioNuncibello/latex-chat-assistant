@@ -29,7 +29,8 @@ Playwright in TypeScript.
   container. La stessa PR porta questo piano, la regola «Spiegare il lavoro» di `AGENTS.md` e la
   rimozione dell'handoff.
 - **Contenuto:** `docs/web.md` e regole per npm e Vitest; pagina React bianca con i suoi unit test;
-  `Dockerfile` in due fasi (build con Node, poi nginx).
+  `Dockerfile` in due fasi (build con Node, poi nginx). Ogni componente tiene i test nella sua
+  cartella: quelli di `web` sono in `web/tests/`.
 - **Per la revisione:** `package-lock.json` è generato da npm, è lungo e non si legge riga per riga.
 
 ### 1.4 Controlli sulla PR
@@ -37,7 +38,9 @@ Playwright in TypeScript.
 - **PR:** `chore(web): run web checks on pull requests`, branch `chore/web-ci-checks`
 - **Contenuto:** GitHub Action con unit test, coverage, controllo dei tipi, lint e formattazione di
   `web`. Gli strumenti di lint e formattazione si scelgono qui (sono dipendenze da approvare),
-  verificando che funzionino con TypeScript 7.
+  verificando che funzionino con TypeScript 7. I comandi partono da `web/`. Un controllo
+  obbligatorio non va filtrato per cartella a livello di workflow: quando il workflow viene saltato,
+  il controllo resta in attesa e blocca il merge.
 - **Finito quando:** un test che fallisce rende rossa la PR. L'admin aggiunge poi il nuovo controllo
   a quelli obbligatori nella protezione di `main`.
 - **Dipende da:** merge dei task da 1.1 a 1.3
@@ -64,7 +67,7 @@ Gli unit test arrivano già con ogni task. Questa fase aggiunge ciò che prova i
 
 | Task | Branch e titolo della PR | Contenuto | Finito quando |
 |---|---|---|---|
-| 3.1 Playwright | `test/web-playwright-setup`<br>`test(web): add playwright smoke test` | configurazione di Playwright (dipendenza `@playwright/test`) e un primo test in `tests/e2e/web/` sullo scheletro | il test passa in locale contro il container e il comando è in `AGENTS.md` |
+| 3.1 Playwright | `test/web-playwright-setup`<br>`test(web): add playwright smoke test` | configurazione di Playwright (dipendenza `@playwright/test`) e un primo test in `web/tests/e2e/` sullo scheletro | il test passa in locale contro il container e il comando è in `AGENTS.md` |
 | 3.2 E2E nella CI | `chore/web-e2e-ci`<br>`chore(web): run e2e tests in ci` | Action che costruisce il container ed esegue gli end-to-end; regola aggiornata in `AGENTS.md` | gli end-to-end partono sulla PR |
 | 3.3 Immagine | `chore/web-publish-image`<br>`chore(web): publish web image to ghcr` | workflow che pubblica l'immagine su ghcr.io; si decide se a ogni merge o su tag (domanda A5) | l'immagine pubblicata si scarica e si avvia |
 

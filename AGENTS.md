@@ -70,22 +70,28 @@ Tutto minuscolo, con i trattini.
 
 ## Struttura della repo
 
-Una cartella per componente. I test stanno fuori dalle componenti, con una sottocartella per
-componente e un `test_<file>.py` per ogni file testato:
+Una cartella per componente, ognuna con dentro i suoi test. Nella `tests/` della radice stanno solo
+quelli che non appartengono a una componente: gli script generali e i percorsi di sistema.
 
 ```
 <componente>/
-  <file>.py
+  ...                     # codice e configurazione
+  tests/
+    unit/                 # un file di test per ogni file testato: test_<file>
+    e2e/                  # solo se la componente ha end-to-end
+scripts/                  # strumenti del repo
 tests/
-  unit/<componente>/test_<file>.py
-  e2e/<componente>/
-  e2e/system/                       # percorsi che attraversano più componenti
+  unit/scripts/           # i test di scripts/
+  e2e/system/             # percorsi che attraversano più componenti
 ```
 
-In `web` il codice sta in `web/src/<file>.tsx` e il suo test in `tests/unit/web/test_<file>.tsx`.
+- In `web` il codice sta in `web/src/<file>.tsx` e il suo test in `web/tests/unit/test_<file>.tsx`.
+- Componenti Python: con il primo test, la cartella `<componente>/tests/unit` si aggiunge a
+  `testpaths` nel `pyproject.toml` della radice, altrimenti pytest non lo esegue. L'immagine finale
+  non contiene i test.
 
-Fuori dalle componenti: `scripts/` (strumenti del repo, con i loro test in `tests/unit/scripts/`),
-`agent-skills/` (sorgenti delle skill) e `docs/`.
+Fuori dalle componenti, oltre a `scripts/` e `tests/`: `agent-skills/` (sorgenti delle skill) e
+`docs/`.
 
 ## Skill degli agenti
 
@@ -107,15 +113,15 @@ Componenti Python:
 - Solo forma ufficiale di uv: `pyproject.toml` e `uv.lock`. Un `requirements.txt` non esiste.
 - Workspace: `pyproject.toml` nella radice, più un `pyproject.toml` per ogni componente con le sue
   dipendenze. Il `uv.lock` è uno solo, nella radice, e si modifica solo con uv.
-- `[dependency-groups].dev` (es. `pytest`) sta nel `pyproject.toml` della radice, perché i test
-  sono fuori dalle componenti.
+- `[dependency-groups].dev` (es. `pytest`) sta nel `pyproject.toml` della radice, perché è comune a
+  script e componenti.
 - Ogni immagine Docker installa solo la sua componente: `uv sync --package <componente>`.
 
 `web`:
 
-- npm con un workspace: `package.json` nella radice, più `web/package.json` con le dipendenze. Il
-  `package-lock.json` è uno solo, nella radice, e si modifica solo con npm.
-- Una dipendenza si aggiunge con `npm install --workspace web <pacchetto>`.
+- È un progetto npm autonomo: `package.json` e `package-lock.json` stanno in `web/`. Il lockfile si
+  modifica solo con npm.
+- Una dipendenza si aggiunge da `web/` con `npm install <pacchetto>`.
 - L'immagine installa dal lockfile, con `npm ci`.
 
 Per tutte le componenti: una dipendenza nuova si chiede all'utente prima di aggiungerla.
@@ -132,15 +138,20 @@ uv run python scripts/sync_agent_skills.py            # copia agent-skills/ per 
 uv run python scripts/sync_agent_skills.py --check    # verifica che le copie siano allineate
 ```
 
-Per `web`, dalla radice (serve Node 24):
+Per `web`, dalla cartella `web/` (serve Node 24):
 
 ```
-npm ci                             # installa i pacchetti dal lockfile
-npm run dev --workspace web        # server di sviluppo di Vite
-npm run test --workspace web       # unit test con coverage (soglia 90%)
-npm run typecheck --workspace web  # controllo dei tipi
-npm run build --workspace web      # build dei file statici
-docker build -f web/Dockerfile -t latex-chat-web .                             # immagine
+npm ci                # installa i pacchetti dal lockfile
+npm run dev           # server di sviluppo di Vite
+npm run test          # unit test con coverage (soglia 90%)
+npm run typecheck     # controllo dei tipi
+npm run build         # build dei file statici
+```
+
+Container di `web`, dalla radice:
+
+```
+docker build -t latex-chat-web web                                             # immagine
 docker run --rm --name latex-chat-web -p 127.0.0.1:8080:8080 latex-chat-web    # http://127.0.0.1:8080
 ```
 

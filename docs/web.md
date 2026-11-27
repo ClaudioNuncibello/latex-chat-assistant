@@ -9,7 +9,7 @@ Serve la pagina in forma di chat. Cosa deve fare la pagina è in `docs/architett
 |---|---|
 | Pagina | React e TypeScript, costruita con Vite |
 | Server | nginx, nell'immagine `nginxinc/nginx-unprivileged` (utente non privilegiato, porta 8080) |
-| Pacchetti | npm, con un workspace nella radice |
+| Pacchetti | npm |
 | Unit test | Vitest con jsdom, coverage almeno al 90% |
 
 - La logica dell'interfaccia sta nella pagina, quindi nel browser. In `web` non c'è un backend
@@ -20,29 +20,32 @@ Serve la pagina in forma di chat. Cosa deve fare la pagina è in `docs/architett
 ## Container
 
 `web/Dockerfile` ha due fasi: Node installa i pacchetti e costruisce la pagina, poi l'immagine
-finale riceve solo nginx e i file statici. Il contesto di build è la radice della repo, dove sta
-`package-lock.json`; `.dockerignore` lascia passare solo ciò che serve.
+finale riceve solo nginx e i file statici. Il contesto di build è la cartella `web/`;
+`web/.dockerignore` esclude pacchetti, file generati, test e file `.env`.
 
 La porta si pubblica solo su `127.0.0.1`, perché la pagina non ha login.
 
 ## File
 
+`web/` è un progetto npm autonomo, con dentro i suoi test.
+
 ```
-package.json              # npm workspace
-package-lock.json         # versioni bloccate, lo modifica solo npm
 web/
   Dockerfile
+  .dockerignore
   nginx.conf
   index.html
-  package.json            # dipendenze e script di web
+  package.json            # dipendenze e script
+  package-lock.json       # versioni bloccate, lo modifica solo npm
   tsconfig.json
   vite.config.ts          # configurazione di Vite e Vitest
   src/
     main.tsx              # monta l'applicazione nella pagina
     App.tsx               # componente principale
-tests/unit/web/
-  test_main.tsx
-  test_App.tsx
+  tests/
+    unit/
+      test_main.tsx
+      test_App.tsx
 ```
 
 I comandi sono in `AGENTS.md`.

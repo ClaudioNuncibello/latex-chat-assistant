@@ -1,8 +1,0 @@
-# Allow list: only what the images need is sent to Docker
-*
-!package.json
-!package-lock.json
-!web
-**/node_modules
-**/dist
-**/coverage
