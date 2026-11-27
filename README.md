@@ -40,8 +40,19 @@ La pagina è pensata per l'uso locale, un utente alla volta, senza login.
 
 ## Stato
 
-Il progetto è all'inizio. Per ora la repo contiene le regole di lavoro; la specifica delle
-componenti e il codice arrivano con le pull request successive.
+Il progetto è all'inizio. Di `web` ci sono il container e una pagina React ancora bianca: chat,
+controlli e documento descritti sopra sono da realizzare, con i passi di
+[docs/web-piano.md](docs/web-piano.md). Le altre componenti non sono ancora nella repo. Il quadro
+d'insieme è in [docs/architettura-generale.md](docs/architettura-generale.md).
+
+Per provare la pagina serve Docker:
+
+```
+docker build -f web/Dockerfile -t latex-chat-web .
+docker run --rm -p 127.0.0.1:8080:8080 latex-chat-web
+```
+
+La pagina risponde su http://127.0.0.1:8080.
 
 ## Come si lavora
 

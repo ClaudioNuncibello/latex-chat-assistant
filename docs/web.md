@@ -49,7 +49,8 @@ I comandi sono in `AGENTS.md`.
 
 ## Stato
 
-La pagina è bianca: `App` contiene solo un'area vuota.
+La pagina è bianca: `App` contiene solo un'area vuota. I passi successivi sono in
+`docs/web-piano.md`.
 
 ## Aperto
 

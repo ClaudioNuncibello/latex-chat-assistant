@@ -40,8 +40,8 @@ rispettiamo:
 | ogni modifica a `main` con PR revisionata da almeno un membro | protezione del branch `main`, 1 approvazione |
 | pipeline con linter, type checker, formatter e test | ruff e ty, file `lint.yml` e `test.yml` |
 | unit test con pytest, coverage almeno 90% | `fail_under = 90` in `pyproject.toml`, verificato dalla pipeline |
-| test E2E con Playwright eseguiti nella pipeline | **da fare** insieme al container `web` (sezione 10) |
-| Dockerfile e workflow che pubblica un'immagine su ghcr.io | **da fare** insieme al container `web` (sezione 10) |
+| test E2E con Playwright eseguiti nella pipeline | **da fare** (sezione 10) |
+| Dockerfile e workflow che pubblica un'immagine su ghcr.io | Dockerfile di `web` presente; workflow **da fare** (sezione 10) |
 | `AGENTS.md` e flusso di lavoro moderno | `AGENTS.md` e le skill condivise in `agent-skills/` |
 | README chiaro; codice, commenti e commit in inglese | README in italiano per scelta del team; codice, commenti, branch e commit in inglese |
 
@@ -237,9 +237,9 @@ privilegiato, timeout, limiti di CPU e memoria, niente shell-escape. Test che di
   ha i suoi test. La pipeline si prova con il client finto, nessun test dipende da un modello.
 - **E2E con Playwright** nella CI, con il sistema avviato dal compose e il client finto acceso:
   scrivi un testo, vedi lo stato, vedi l'anteprima, scarichi PDF e `.tex`; modello occupato e
-  annulla. Arriva con il container `web`. **[proposta]**
+  annulla. I passi sono in `docs/web-piano.md`. **[proposta]**
 - **Immagini Docker su ghcr.io**: un `Dockerfile` per ogni componente nostro e un workflow di
-  pubblicazione. Arriva con il container `web`. **[proposta]**
+  pubblicazione. I passi sono in `docs/web-piano.md`. **[proposta]**
 
 ## 11. Altre domande aperte
 

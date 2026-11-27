@@ -6,6 +6,8 @@ revisionare. Le regole di lavoro stanno in `AGENTS.md`, il quadro d'insieme in
 
 Stato: **bozza**. La fase 2 va rivista dopo aver esaminato il mockup HTML.
 
+**Dove siamo:** fatti i task da 1.1 a 1.3. Il prossimo è l'1.4, dopo il merge del container.
+
 ## Come si legge
 
 - Un task = un branch = una PR. Il titolo della PR è indicato sotto ogni task.
@@ -15,58 +17,30 @@ Stato: **bozza**. La fase 2 va rivista dopo aver esaminato il mockup HTML.
 - Un task è finito quando vale quanto scritto in «Finito quando» e i controlli esistenti passano.
 - Se durante il lavoro un task risulta troppo grande, si divide e si aggiorna questo file.
 
-## Scelte di partenza
-
-- Pagina in React e TypeScript, costruita con Vite.
-- Nel container finale: nginx, che serve i file statici e dalla fase 4 inoltra `/api/*` alla
-  pipeline. Nessun backend scritto da noi.
-- Node serve per costruire l'immagine e per sviluppare e testare.
-- Unit test con Vitest, coverage almeno al 90%. End-to-end con Playwright in TypeScript.
+Stack e container sono descritti in `docs/web.md`. In più, gli end-to-end si scrivono con
+Playwright in TypeScript.
 
 ## Fase 1: container con configurazione base
 
-### 1.1 Documentare lo stack
+### 1.1, 1.2 e 1.3 Stack, container nginx e progetto React (fatti)
 
-- **PR:** `docs(web): record the web stack`, branch `docs/web-stack`
-- **Contenuto:** `docs/web.md` con le scelte di partenza (domande A1 e A2 dell'architettura); in
-  `AGENTS.md` e nell'architettura, le regole per una componente con npm e Vitest invece di
-  `pyproject.toml` e pytest.
-- **Finito quando:** i documenti non si contraddicono tra loro.
-
-### 1.2 Container nginx
-
-- **PR:** `feat(web): add nginx container serving a placeholder page`, branch
-  `feat/web-nginx-container`
-- **Contenuto:** `web/Dockerfile`, configurazione di nginx, pagina HTML statica segnaposto,
-  `.dockerignore`, comandi di build e avvio in `AGENTS.md`. Nessuna dipendenza npm.
-- **Finito quando:** l'immagine si costruisce e la pagina risponde su una porta pubblicata solo su
-  `127.0.0.1`. Non ci sono script, quindi non ci sono unit test.
-- **Dipende da:** 1.1
-
-### 1.3 Progetto React e TypeScript
-
-- **PR:** `feat(web): add react app built inside the container`, branch `feat/web-react-app`
-- **Contenuto:** progetto React minimo che sostituisce la pagina segnaposto; `Dockerfile` in due fasi
-  (build con Node, poi nginx); Vitest con soglia di coverage al 90% e il primo unit test; controllo
-  dei tipi; `node_modules/` e `dist/` in `.gitignore`.
-- **Dipendenze:** `react`, `react-dom`, `typescript`, `vite`, `@vitejs/plugin-react`,
-  `@types/react`, `@types/react-dom`, `vitest`, `@vitest/coverage-v8`, `@testing-library/react`,
-  `jsdom`.
-- **Finito quando:** test e controllo dei tipi passano in locale e il container serve la pagina React.
-- **Da risolvere nel task:** i test stanno in `tests/unit/web/`, fuori da `web/`: Vitest e
-  TypeScript vanno configurati per trovare da lì i pacchetti. Va fissato anche il nome dei file di
-  test.
+- **PR:** `feat(web): add react app served by an nginx container`, branch `feat/web-react-container`
+- **Eccezione:** erano tre task, riuniti in una sola PR per arrivare subito a una pagina React in un
+  container. La stessa PR porta questo piano, la regola «Spiegare il lavoro» di `AGENTS.md` e la
+  rimozione dell'handoff.
+- **Contenuto:** `docs/web.md` e regole per npm e Vitest; pagina React bianca con i suoi unit test;
+  `Dockerfile` in due fasi (build con Node, poi nginx).
 - **Per la revisione:** `package-lock.json` è generato da npm, è lungo e non si legge riga per riga.
-- **Dipende da:** 1.2
 
 ### 1.4 Controlli sulla PR
 
 - **PR:** `chore(web): run web checks on pull requests`, branch `chore/web-ci-checks`
 - **Contenuto:** GitHub Action con unit test, coverage, controllo dei tipi, lint e formattazione di
-  `web`. Gli strumenti di lint e formattazione si scelgono qui (sono dipendenze da approvare).
+  `web`. Gli strumenti di lint e formattazione si scelgono qui (sono dipendenze da approvare),
+  verificando che funzionino con TypeScript 7.
 - **Finito quando:** un test che fallisce rende rossa la PR. L'admin aggiunge poi il nuovo controllo
   a quelli obbligatori nella protezione di `main`.
-- **Dipende da:** 1.3
+- **Dipende da:** merge dei task da 1.1 a 1.3
 
 Sta nella fase 1 perché, fino a questo task, i test di `web` non impediscono il merge.
 
@@ -128,9 +102,9 @@ pipeline simulata, e il suo end-to-end, con il container della pipeline e l'LLM 
 
 ## Da chiarire
 
-- **Approvazione del professore:** l'architettura è una bozza da far approvare prima di scrivere i
-  file per componente (riguarda la 1.1).
+- **Approvazione del professore:** l'architettura risulta ancora una bozza da far approvare;
+  `docs/web.md` è stato scritto senza aspettare.
 - **Test del frontend:** i criteri del corso parlano di unit test con pytest: va confermato che per
-  `web` vada bene Vitest (riguarda 1.1 e 1.3).
-- **Dipendenze:** vanno approvate prima del task che le aggiunge (1.3, 1.4, 3.1).
+  `web` vada bene Vitest.
+- **Dipendenze:** vanno approvate prima del task che le aggiunge (1.4, 3.1).
 - **Mockup:** può cambiare la divisione dei task della fase 2.
