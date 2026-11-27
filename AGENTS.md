@@ -46,6 +46,9 @@ Tutto minuscolo, con i trattini.
 - Ogni script ha i suoi unit test, scritti nello stesso task.
 - Gli unit test girano come GitHub Action sulla PR; se falliscono, il merge è impedito.
   La coverage deve restare almeno al 90% (`fail_under` in `pyproject.toml`): sotto, la Action fallisce.
+- `web` si prova con Vitest, con la stessa soglia (in `web/vite.config.ts`). La Action non esegue
+  ancora i suoi test: prima di pubblicare un branch che tocca `web`, si lanciano in locale i test,
+  il controllo dei tipi e la build.
 - Sulla PR gira anche la Action di lint (`ruff check`, `ruff format --check`, `ty check`). Prima
   di pubblicare il branch si lanciano gli stessi comandi in locale (sezione Comandi).
 - Per ora la Action non esegue gli end-to-end né la build Docker.
@@ -66,6 +69,8 @@ tests/
   e2e/system/                       # percorsi che attraversano più componenti
 ```
 
+In `web` il codice sta in `web/src/<file>.tsx` e il suo test in `tests/unit/web/test_<file>.tsx`.
+
 Fuori dalle componenti: `scripts/` (strumenti del repo, con i loro test in `tests/unit/scripts/`),
 `agent-skills/` (sorgenti delle skill) e `docs/`.
 
@@ -82,7 +87,9 @@ legge da `.claude/skills/`, Antigravity da `.agents/skills/`.
   fonte.
 - `handoff` scrive `docs/handoff.md`, che si committa e si pusha con una PR come ogni altro file.
 
-## Dipendenze (uv)
+## Dipendenze (uv e npm)
+
+Componenti Python:
 
 - Solo forma ufficiale di uv: `pyproject.toml` e `uv.lock`. Un `requirements.txt` non esiste.
 - Workspace: `pyproject.toml` nella radice, più un `pyproject.toml` per ogni componente con le sue
@@ -90,7 +97,15 @@ legge da `.claude/skills/`, Antigravity da `.agents/skills/`.
 - `[dependency-groups].dev` (es. `pytest`) sta nel `pyproject.toml` della radice, perché i test
   sono fuori dalle componenti.
 - Ogni immagine Docker installa solo la sua componente: `uv sync --package <componente>`.
-- Una dipendenza nuova si chiede all'utente prima di aggiungerla.
+
+`web`:
+
+- npm con un workspace: `package.json` nella radice, più `web/package.json` con le dipendenze. Il
+  `package-lock.json` è uno solo, nella radice, e si modifica solo con npm.
+- Una dipendenza si aggiunge con `npm install --workspace web <pacchetto>`.
+- L'immagine installa dal lockfile, con `npm ci`.
+
+Per tutte le componenti: una dipendenza nuova si chiede all'utente prima di aggiungerla.
 
 ## Comandi
 
@@ -102,6 +117,18 @@ uv run ruff format .               # formattazione (--check per solo verificare)
 uv run ty check                    # type check
 uv run python scripts/sync_agent_skills.py            # copia agent-skills/ per i due agenti
 uv run python scripts/sync_agent_skills.py --check    # verifica che le copie siano allineate
+```
+
+Per `web`, dalla radice (serve Node 24):
+
+```
+npm ci                             # installa i pacchetti dal lockfile
+npm run dev --workspace web        # server di sviluppo di Vite
+npm run test --workspace web       # unit test con coverage (soglia 90%)
+npm run typecheck --workspace web  # controllo dei tipi
+npm run build --workspace web      # build dei file statici
+docker build -f web/Dockerfile -t latex-chat-web .                             # immagine
+docker run --rm --name latex-chat-web -p 127.0.0.1:8080:8080 latex-chat-web    # http://127.0.0.1:8080
 ```
 
 > Aggiornare questa sezione quando si aggiunge un comando.
