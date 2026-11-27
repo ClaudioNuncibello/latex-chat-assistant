@@ -1,0 +1,7 @@
+{
+  "name": "latex-chat-assistant",
+  "private": true,
+  "workspaces": [
+    "web"
+  ]
+}

@@ -34,3 +34,8 @@ Thumbs.db
 # Coverage output
 .coverage
 htmlcov/
+
+# Node
+node_modules/
+dist/
+coverage/
