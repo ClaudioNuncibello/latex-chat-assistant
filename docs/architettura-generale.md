@@ -40,15 +40,16 @@ rispettiamo:
 | ogni modifica a `main` con PR revisionata da almeno un membro | protezione del branch `main`, 1 approvazione |
 | pipeline con linter, type checker, formatter e test | ruff e ty, file `lint.yml` e `test.yml` |
 | unit test con pytest, coverage almeno 90% | `fail_under = 90` in `pyproject.toml`, verificato dalla pipeline |
-| test E2E con Playwright eseguiti nella pipeline | **da fare** insieme al container `web` (sezione 10) |
-| Dockerfile e workflow che pubblica un'immagine su ghcr.io | **da fare** insieme al container `web` (sezione 10) |
+| test E2E con Playwright eseguiti nella pipeline | **da fare** (sezione 10) |
+| Dockerfile e workflow che pubblica un'immagine su ghcr.io | Dockerfile di `web` presente; workflow **da fare** (sezione 10) |
 | `AGENTS.md` e flusso di lavoro moderno | `AGENTS.md` e le skill condivise in `agent-skills/` |
 | README chiaro; codice, commenti e commit in inglese | README in italiano per scelta del team; codice, commenti, branch e commit in inglese |
 
 ## 3. Componenti
 
-Ogni componente ha la sua cartella, il suo `pyproject.toml` (workspace uv) e un container Docker.
-Un file `docker-compose` avvia l'insieme. **[proposta]**
+Ogni componente ha la sua cartella, con dentro i suoi test, e un container Docker. Quelle in Python
+hanno il loro `pyproject.toml` (workspace uv); `web` è un progetto npm autonomo. Un file
+`docker-compose` avvia l'insieme. **[proposta]**
 
 ```
  browser ──HTTP──► web ──HTTP──► pipeline ──HTTP──► compiler
@@ -226,24 +227,24 @@ privilegiato, timeout, limiti di CPU e memoria, niente shell-escape. Test che di
 - Serve la chat e il pannello dei controlli; mostra l'anteprima del PDF e i download.
 - Stato dei job via SSE; indicatore «modello occupato»; annulla e rigenera.
 - Badge «test mode» quando la pipeline è in modalità test.
-- Stack e server: **[aperto]**, vedi domande A1 e A2.
+- React e TypeScript, serviti da nginx, che inoltra `/api/*` alla pipeline. **[deciso]** Dettagli in
+  `docs/web.md`.
 
 ## 10. Qualità e test
 
-- **Unit test** con pytest e coverage almeno al 90%, già nella CI. Ogni script ha i suoi test. La
-  pipeline si prova con il client finto, nessun test dipende da un modello.
+- **Unit test** con coverage almeno al 90%: pytest per il codice Python, già nella CI; Vitest per
+  `web`, non ancora nella CI. Che Vitest soddisfi il criterio del corso è **[aperto]**. Ogni script
+  ha i suoi test. La pipeline si prova con il client finto, nessun test dipende da un modello.
 - **E2E con Playwright** nella CI, con il sistema avviato dal compose e il client finto acceso:
   scrivi un testo, vedi lo stato, vedi l'anteprima, scarichi PDF e `.tex`; modello occupato e
-  annulla. Arriva con il container `web`. **[proposta]**
+  annulla. I passi sono in `docs/web-piano.md`. **[proposta]**
 - **Immagini Docker su ghcr.io**: un `Dockerfile` per ogni componente nostro e un workflow di
-  pubblicazione. Arriva con il container `web`. **[proposta]**
+  pubblicazione. I passi sono in `docs/web-piano.md`. **[proposta]**
 
 ## 11. Altre domande aperte
 
 | # | Domanda | Come si chiude |
 |---|---|---|
-| A1 | Stack della pagina: HTML e JavaScript semplici oppure un framework? | confronto per semplicità e per Playwright, in `docs/web.md` |
-| A2 | Quale server serve la pagina e fa da inoltro verso la pipeline? | `docs/web.md` |
 | A3 | Motore del compilatore: `pdflatex` (come Overleaf) o `tectonic`? | prova nel container; `docs/compiler.md` |
 | A4 | Cosa conserva la pipeline e per quanto (testo, `.tex`, PDF dell'ultimo job)? | `docs/pipeline.md`; proposta: solo l'ultimo risultato, in memoria o in cartella temporanea |
 | A5 | Quando si pubblicano le immagini: a ogni merge su `main` o su tag? | workflow `docker.yml` |

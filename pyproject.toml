@@ -13,8 +13,8 @@ package = false
 [tool.uv.workspace]
 members = []
 
-# Strumenti usati solo in sviluppo e nei test. I test stanno fuori dalle componenti,
-# quindi il gruppo dev vive qui nella radice.
+# Strumenti usati solo in sviluppo e nei test, condivisi da script e componenti Python:
+# il gruppo dev vive qui nella radice.
 [dependency-groups]
 dev = [
     "pytest",
@@ -29,10 +29,10 @@ testpaths = ["tests/unit"]
 addopts = "--import-mode=importlib --cov --cov-report=term-missing"
 
 # Coverage covers every Python file in the repo (so new components are measured automatically),
-# except the tests themselves. The pipeline fails below 90%.
+# except the tests themselves, in any `tests` folder. The pipeline fails below 90%.
 [tool.coverage.run]
 source = ["."]
-omit = ["tests/*", ".venv/*"]
+omit = ["*/tests/*", ".venv/*"]
 
 [tool.coverage.report]
 fail_under = 90

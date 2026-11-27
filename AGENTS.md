@@ -17,6 +17,19 @@ Issue tracker: GitHub, con `gh`. Come si pubblicano e si leggono i ticket: `docs
 Prosa e documentazione in italiano. Identificatori, nomi di file, commenti nel codice, branch,
 commit e titoli di PR in inglese.
 
+## Spiegare il lavoro
+
+Regola importante: chi segue il lavoro deve capire tutto quello che si fa, mentre si fa. L'agente
+spiega in chat, in italiano semplice, definendo i termini tecnici la prima volta che li usa.
+
+- **Prima di un task:** cosa si farà, a cosa serve nel progetto e quali file si toccano.
+- **Durante:** per ogni passo, cosa fa e perché si fa così. Vale anche per file di configurazione,
+  dipendenze e comandi.
+- **A task finito:** cosa è cambiato file per file, come provarlo, con quale esito è stato provato e
+  cosa resta da fare.
+- **A fase finita** (le fasi di un piano, per esempio `docs/web-piano.md`): cosa funziona adesso,
+  come si collegano le parti realizzate e quale fase viene dopo.
+
 ## Un branch, un task, una PR
 
 - Ogni task ha un branch dedicato, creato da `main` aggiornato. Il task è il più piccolo possibile:
@@ -46,6 +59,9 @@ Tutto minuscolo, con i trattini.
 - Ogni script ha i suoi unit test, scritti nello stesso task.
 - Gli unit test girano come GitHub Action sulla PR; se falliscono, il merge è impedito.
   La coverage deve restare almeno al 90% (`fail_under` in `pyproject.toml`): sotto, la Action fallisce.
+- `web` si prova con Vitest, con la stessa soglia (in `web/vite.config.ts`). La Action non esegue
+  ancora i suoi test: prima di pubblicare un branch che tocca `web`, si lanciano in locale i test,
+  il controllo dei tipi e la build.
 - Sulla PR gira anche la Action di lint (`ruff check`, `ruff format --check`, `ty check`). Prima
   di pubblicare il branch si lanciano gli stessi comandi in locale (sezione Comandi).
 - Per ora la Action non esegue gli end-to-end né la build Docker.
@@ -54,20 +70,28 @@ Tutto minuscolo, con i trattini.
 
 ## Struttura della repo
 
-Una cartella per componente. I test stanno fuori dalle componenti, con una sottocartella per
-componente e un `test_<file>.py` per ogni file testato:
+Una cartella per componente, ognuna con dentro i suoi test. Nella `tests/` della radice stanno solo
+quelli che non appartengono a una componente: gli script generali e i percorsi di sistema.
 
 ```
 <componente>/
-  <file>.py
+  ...                     # codice e configurazione
+  tests/
+    unit/                 # un file di test per ogni file testato: test_<file>
+    e2e/                  # solo se la componente ha end-to-end
+scripts/                  # strumenti del repo
 tests/
-  unit/<componente>/test_<file>.py
-  e2e/<componente>/
-  e2e/system/                       # percorsi che attraversano più componenti
+  unit/scripts/           # i test di scripts/
+  e2e/system/             # percorsi che attraversano più componenti
 ```
 
-Fuori dalle componenti: `scripts/` (strumenti del repo, con i loro test in `tests/unit/scripts/`),
-`agent-skills/` (sorgenti delle skill) e `docs/`.
+- In `web` il codice sta in `web/src/<file>.tsx` e il suo test in `web/tests/unit/test_<file>.tsx`.
+- Componenti Python: con il primo test, la cartella `<componente>/tests/unit` si aggiunge a
+  `testpaths` nel `pyproject.toml` della radice, altrimenti pytest non lo esegue. L'immagine finale
+  non contiene i test.
+
+Fuori dalle componenti, oltre a `scripts/` e `tests/`: `agent-skills/` (sorgenti delle skill) e
+`docs/`.
 
 ## Skill degli agenti
 
@@ -82,15 +106,25 @@ legge da `.claude/skills/`, Antigravity da `.agents/skills/`.
   fonte.
 - `handoff` scrive `docs/handoff.md`, che si committa e si pusha con una PR come ogni altro file.
 
-## Dipendenze (uv)
+## Dipendenze (uv e npm)
+
+Componenti Python:
 
 - Solo forma ufficiale di uv: `pyproject.toml` e `uv.lock`. Un `requirements.txt` non esiste.
 - Workspace: `pyproject.toml` nella radice, più un `pyproject.toml` per ogni componente con le sue
   dipendenze. Il `uv.lock` è uno solo, nella radice, e si modifica solo con uv.
-- `[dependency-groups].dev` (es. `pytest`) sta nel `pyproject.toml` della radice, perché i test
-  sono fuori dalle componenti.
+- `[dependency-groups].dev` (es. `pytest`) sta nel `pyproject.toml` della radice, perché è comune a
+  script e componenti.
 - Ogni immagine Docker installa solo la sua componente: `uv sync --package <componente>`.
-- Una dipendenza nuova si chiede all'utente prima di aggiungerla.
+
+`web`:
+
+- È un progetto npm autonomo: `package.json` e `package-lock.json` stanno in `web/`. Il lockfile si
+  modifica solo con npm.
+- Una dipendenza si aggiunge da `web/` con `npm install <pacchetto>`.
+- L'immagine installa dal lockfile, con `npm ci`.
+
+Per tutte le componenti: una dipendenza nuova si chiede all'utente prima di aggiungerla.
 
 ## Comandi
 
@@ -102,6 +136,23 @@ uv run ruff format .               # formattazione (--check per solo verificare)
 uv run ty check                    # type check
 uv run python scripts/sync_agent_skills.py            # copia agent-skills/ per i due agenti
 uv run python scripts/sync_agent_skills.py --check    # verifica che le copie siano allineate
+```
+
+Per `web`, dalla cartella `web/` (serve Node 24):
+
+```
+npm ci                # installa i pacchetti dal lockfile
+npm run dev           # server di sviluppo di Vite
+npm run test          # unit test con coverage (soglia 90%)
+npm run typecheck     # controllo dei tipi
+npm run build         # build dei file statici
+```
+
+Container di `web`, dalla radice:
+
+```
+docker build -t latex-chat-web web                                             # immagine
+docker run --rm --name latex-chat-web -p 127.0.0.1:8080:8080 latex-chat-web    # http://127.0.0.1:8080
 ```
 
 > Aggiornare questa sezione quando si aggiunge un comando.
